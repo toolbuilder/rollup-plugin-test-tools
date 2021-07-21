@@ -1,0 +1,65 @@
+{
+  "name": "@toolbuilder/rollup-plugin-test-tools",
+  "description": "Supports pack file testing for dual modules using Rollup.",
+  "version": "0.1.0",
+  "keywords": [
+    "rollup",
+    "dual",
+    "module",
+    "ES",
+    "pack"
+  ],
+  "homepage": "https://github.com/toolbuilder/rollup-plugin-test-tools#readme",
+  "bugs": {
+    "url": "https://github.com/toolbuilder/rollup-plugin-test-tools/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toolbuilder/rollup-plugin-test-tools.git"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "module": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check": "run-s check:*",
+    "check:packagejson": "npmPkgJsonLint .",
+    "check:src": "eslint src",
+    "check:uncommitted": "uncommitted",
+    "prerelease": "run-s check",
+    "release": "standard-version",
+    "test": "esm-tape-runner \"test/**/*test.js\""
+  },
+  "eslintConfig": {
+    "extends": "@toolbuilder/eslint-config"
+  },
+  "dependencies": {
+    "@toolbuilder/rollup-plugin-commands": "^0.1.2",
+    "@toolbuilder/rollup-plugin-create-pack-file": "^0.1.4",
+    "cuid": "^2.1.8",
+    "date-fns": "^2.22.1",
+    "esm": "^3.2.25",
+    "rollup-plugin-create-test-package-json": "^0.1.3",
+    "rollup-plugin-multi-input": "^1.3.1",
+    "rollup-plugin-relative-to-package": "^0.1.4"
+  },
+  "devDependencies": {
+    "@small-tech/esm-tape-runner": "^1.0.3",
+    "@toolbuilder/eslint-config": "^0.1.4",
+    "@toolbuilder/package-json-lint-config": "^0.1.0",
+    "eslint": "^7.31.0",
+    "npm-package-json-lint": "^5.1.0",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^2.53.2",
+    "standard-version": "^9.3.1",
+    "uncommitted": "^1.0.0"
+  },
+  "peerDependencies": {
+    "rollup": ">= 2"
+  },
+  "npmpackagejsonlint": {
+    "extends": "@toolbuilder/package-json-lint-config"
+  }
+}
