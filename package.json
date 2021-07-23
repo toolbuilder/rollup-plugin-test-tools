@@ -36,6 +36,8 @@
     "extends": "@toolbuilder/eslint-config"
   },
   "dependencies": {
+    "@rollup/plugin-multi-entry": "^4.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.2",
     "@toolbuilder/rollup-plugin-commands": "^0.1.2",
     "@toolbuilder/rollup-plugin-create-pack-file": "^0.1.4",
     "cuid": "^2.1.8",

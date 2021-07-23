@@ -5,6 +5,10 @@ import createPackFile from '@toolbuilder/rollup-plugin-create-pack-file'
 import runCommands, { shellCommand } from '@toolbuilder/rollup-plugin-commands'
 import { tempPath } from './temp-path.js'
 
+/*
+  Rollup configs to test a packfile with ES and CommonJS Node projects.
+*/
+
 /**
  * This represents the common parts between the ES and CommonJS test project generation. The userOptions
  * provide the differences.
@@ -16,18 +20,18 @@ export const basePackfileTestConfig = (userOptions) => {
   const testPackageDir = userOptions.testPackageDir || tempPath()
   const options = {
     commands: [
-      // Install dependencies and run the unit test
+      // Install dependencies and run the unit test.
       // The -C parameter ensures that the test does not resolve
       // any packages outside testPackageDir. Ordinarily, it
-      // would pickup packages the package that called Rollup too
+      // would pickup packages from the package that called Rollup
       // because the execution environments share paths.
       shellCommand(`pnpm -C ${testPackageDir} install-test`)
     ],
-    input: ['test/**/*test.js'],
+    input: ['test/**/*test.js'], // unit test source file glob
     format: 'es',
-    modulePaths: 'src/**/*.js',
-    packCommand: 'pnpm pack',
-    testPackageDir,
+    modulePaths: 'src/**/*.js', // package source file glob
+    packCommand: 'pnpm pack', // command to generate pack file
+    testPackageDir, // where the Node project for test will be located
     testPackageJson: {},
     ...userOptions
   }
@@ -59,11 +63,11 @@ export const basePackfileTestConfig = (userOptions) => {
   }
 }
 
-export const testConfigs = [
+export const nodeConfigs = [
   {
     format: 'cjs',
     testPackageJson: {
-      type: 'commonjs', // test package with commonJS module
+      type: 'commonjs', // test package with commonJS project
       scripts: {
         test: "tape 'test/*test.js' | tap-nirvana"
       },
@@ -77,7 +81,7 @@ export const testConfigs = [
   {
     format: 'es',
     testPackageJson: {
-      type: 'module', // test package with ES module
+      type: 'module', // test package with ES project
       scripts: {
         test: "esm-tape-runner 'test/**test.js' | tap-nirvana"
       },

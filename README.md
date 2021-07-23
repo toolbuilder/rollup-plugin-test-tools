@@ -43,11 +43,18 @@ The `testConfigs` object is an `Array` with two configurations. The first config
 
 These configurations expect the following:
 
-* Unit tests are written using ES modules
+* Unit tests are written using ES module
 * Unit tests produce TAP output and are standalone - I use [zora](https://www.npmjs.com/package/zora) becuase it also runs in the browser.
 * Unit tests match this glob `test/**/*test.js`
 * Source code matches this glob `src/**/*.js`
 * The [pnpm](https://pnpm.io/) package manager is installed on your system
+
+NOTE: Since the pack file is being tested, the unit tests must use only package imports that are accessible when using the package. Specifically, the unit test imports must match the exports
+declared in the `package.exports` portion of `package.json`. If you have unit tests that import package internals, you can control which unit tests are used for pack file testing with glob specifications.
+
+## Stability
+
+This package will be a bit looser interpreting the semver numbering for the test configurations.
 
 ## Contributing
 
