@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v0.1.1...v0.1.2) (2021-07-24)
+
+
+### Bug Fixes
+
+* added JS version of cat (cash-cat) for non-POSIX shells ([79d993f](https://github.com/toolbuilder/rollup-plugin-test-tools/commit/79d993fc484cf455892678d331fcdb439ffe2e2f))
+
 ### [0.1.1](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v0.1.0...v0.1.1) (2021-07-23)
 
 
