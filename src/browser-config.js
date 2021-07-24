@@ -47,6 +47,7 @@ export const browserTestConfig = [
           // by relativeToPackage, so no need to list them.
           devDependencies: {
             // dependencies for test script
+            'cash-cat': '^0.2.0', // provides 'cat' for non-POSIX shells
             'tape-run': '^9.0.0',
             'tap-nirvana': '^1.1.0'
           }
