@@ -11,7 +11,7 @@ import { browserTestConfig } from './browser-config.js'
 import { nodeConfigs } from './node-configs.js'
 
 export const nodeEsTestConfig = nodeConfigs[0]
-export const nodeCjsTestConfig = nodeConfigs[1]
+export const nodeCommonJsTestConfig = nodeConfigs[1]
 export { browserTestConfig }
 
 export const testConfigs = [...nodeConfigs, ...browserTestConfig]

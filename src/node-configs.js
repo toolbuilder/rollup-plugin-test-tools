@@ -14,6 +14,9 @@ import { tempPath } from './temp-path.js'
  * provide the differences.
  *
  * @param {Object} userOptions - Object that specifies variations on the basic configuration
+ * @param {String} userOptions.format - the Rollup format option for the generated unit tests
+ * @param {Object} userOptions.testPackageJson - the testPackageJson parameter for the rollup-plugin-create-test-package-json plugin.
+ * This is a starter package.json for the generated test project.
  * @returns {RollupConfig} - A completed Rollup configuration object.
  */
 export const basePackfileTestConfig = (userOptions) => {
@@ -73,7 +76,7 @@ export const nodeConfigs = [
       },
       devDependencies: {
         // dependencies for test script
-        tape: '^5.2.2',
+        tape: '^5.2.2', // used as test runner only
         'tap-nirvana': '^1.1.0'
       }
     }
