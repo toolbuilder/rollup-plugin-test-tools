@@ -1,6 +1,6 @@
 # Rollup Plugin Test Tools
 
-This set of [Rollup.js](https://www.rollupjs.org/) configurations provide [pack file](https://docs.npmjs.com/cli/v6/commands/npm-pack) testing for [dual module](https://nodejs.org/dist/latest-v14.x/docs/api/packages) packages and [Electron](https://www.electronjs.org/).
+[Rollup.js](https://www.rollupjs.org/) configurations to test your [pack file](https://docs.npmjs.com/cli/v6/commands/npm-pack) before publishing. It runs your unit tests against your packfile in an ES project, a CommonJS project, and in [Electron](https://www.electronjs.org/). This is primarily for [dual module](https://nodejs.org/dist/latest-v14.x/docs/api/packages) packages.
 
 Here are the basic steps and the plugins used:
 
@@ -20,7 +20,7 @@ The configurations have these requirements:
 * Unit tests produce TAP output and are standalone - I use [zora](https://www.npmjs.com/package/zora) because it also runs in the browser.
 * Unit tests match this glob `test/**/*test.js`
 * Source code matches this glob `src/**/*.js`
-* The [pnpm](https://pnpm.io/) package manager is installed globally on your system. Your project should be able to use another package manager - but I haven't tested this.
+* The [pnpm](https://pnpm.io/) package manager is installed globally on your system for the temporary projects to use.
 
 If your package needs something else, this package exports the plugins above, and some other functionality, to make creating your configurations easier.
 
