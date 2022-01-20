@@ -1,6 +1,6 @@
 # Rollup Plugin Test Tools
 
-[Rollup.js](https://www.rollupjs.org/) configurations to test your [pack file](https://docs.npmjs.com/cli/v6/commands/npm-pack) before publishing. It runs your unit tests against your packfile in an ES project, a CommonJS project, and in [Electron](https://www.electronjs.org/). This is primarily for [dual module](https://nodejs.org/dist/latest-v14.x/docs/api/packages) packages.
+[Rollup.js](https://www.rollupjs.org/) configurations to test your [pack file](https://docs.npmjs.com/cli/v6/commands/npm-pack) before publishing. It runs your unit tests against your packfile in an ES project, a CommonJS project, and in [Electron](https://www.electronjs.org/). This is primarily for [dual module](https://nodejs.org/api/packages.html#dual-commonjses-module-packages) packages.
 
 Here are the basic steps and the plugins used:
 
