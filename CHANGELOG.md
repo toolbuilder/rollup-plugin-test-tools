@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v0.1.4...v1.0.0) (2022-01-25)
+
+
+### Features
+
+* make generated configurations configurable, add tests, more docs ([fc5eb24](https://github.com/toolbuilder/rollup-plugin-test-tools/commit/fc5eb240576c99ece681d410205009c56808c614))
+
 ### [0.1.4](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v0.1.3...v0.1.4) (2022-01-07)
 
 
