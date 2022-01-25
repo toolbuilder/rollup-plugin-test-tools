@@ -1,3 +1,4 @@
+import alias from '@rollup/plugin-alias'
 import createTestPackageJson from 'rollup-plugin-create-test-package-json'
 import multiInput from 'rollup-plugin-multi-input'
 import relativeToPackage from 'rollup-plugin-relative-to-package'
@@ -19,27 +20,38 @@ import { tempPath } from './temp-path.js'
  * This is a starter package.json for the generated test project.
  * @returns {RollupConfig} - A completed Rollup configuration object.
  */
-export const basePackfileTestConfig = (userOptions) => {
-  const testPackageDir = userOptions.testPackageDir || tempPath()
+export const basePackfileTestConfig = (userOptions = {}) => {
+  const packageId = userOptions.packageId || 'package-test'
+  const prefix = userOptions.format ? `${packageId}-${userOptions.format}` : `${packageId}-es`
+  const testPackageDir = userOptions.testPackageDir || tempPath(prefix)
+  const testSourceDir = userOptions.testSourceDir || 'test'
+  const format = userOptions.format || 'es' // Rollup output format
   const options = {
-    commands: [
-      // Install dependencies and run the unit test.
-      // The -C parameter ensures that the test does not resolve
-      // any packages outside testPackageDir. Ordinarily, it
-      // would pickup packages from the package that called Rollup
-      // because the execution environments share paths.
-      shellCommand(`pnpm -C ${testPackageDir} install-test`)
-    ],
-    input: ['test/**/*test.js'], // unit test source file glob
-    format: 'es',
+    aliasOptions: {}, // file aliases for browser build
+    installCommands: [shellCommand(`pnpm -C ${testPackageDir} install`)], // command to install dependencies
+    testCommands: [shellCommand(`pnpm -C ${testPackageDir} test`)],
+    input: [`${testSourceDir}/**/*test.js`], // unit test source file glob
+    format,
     modulePaths: 'src/**/*.js', // package source file glob
     packCommand: 'pnpm pack', // command to generate pack file
     testPackageDir, // where the Node project for test will be located
-    testPackageJson: {},
+    testPackageJson: {
+      type: format === 'es' ? 'module' : 'commonjs',
+      scripts: {
+        test: `pta --reporter tap '${testSourceDir}/**/*test.js'`
+      },
+      devDependencies: {
+        pta: '^1.0.2', // test runner does not against ES code using esm
+        zora: '^5.0.2' // pta has zora as peer dependency
+      }
+    },
+    checkSemverConflicts: true,
     ...userOptions
   }
   // Build a Rollup configuration object for pack file testing
-  return {
+  // Return an Array configuration so all configs produced by this package
+  // can be handled consistently.
+  return [{
     // process all unit tests, and specify output in 'test' directory of testPackageDir
     input: options.input,
     preserveModules: true, // Generate one unit test for each input unit test
@@ -48,50 +60,22 @@ export const basePackfileTestConfig = (userOptions) => {
       dir: options.testPackageDir
     },
     plugins: [
+      alias(options.aliasOptions),
       multiInput(), // Handles the input glob above
       relativeToPackage({ // This package converts relative imports to package imports
         modulePaths: options.modulePaths
       }),
       createTestPackageJson({
         // Provide information that plugin can't pick up for itself
+        checkSemverConflicts: options.checkSemverConflicts,
         testPackageJson: options.testPackageJson
       }),
       createPackFile({ // and move it to output.dir (i.e. testPackageDir)
         packCommand: options.packCommand
       }),
       runCommands({
-        commands: options.commands
+        commands: [...options.installCommands, ...options.testCommands]
       })
     ]
-  }
+  }]
 }
-
-export const nodeConfigs = [
-  {
-    format: 'cjs',
-    testPackageJson: {
-      type: 'commonjs', // test package with commonJS project
-      scripts: {
-        test: "tape 'test/*test.js' | tap-nirvana"
-      },
-      devDependencies: {
-        // dependencies for test script
-        tape: '^5.2.2', // used as test runner only
-        'tap-nirvana': '^1.1.0'
-      }
-    }
-  },
-  {
-    format: 'es',
-    testPackageJson: {
-      type: 'module', // test package with ES project
-      scripts: {
-        test: "esm-tape-runner 'test/**test.js' | tap-nirvana"
-      },
-      devDependencies: {
-        '@small-tech/esm-tape-runner': '^1.0.3',
-        'tap-nirvana': '^1.1.0'
-      }
-    }
-  }
-].map(basePackfileTestConfig)

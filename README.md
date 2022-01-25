@@ -2,7 +2,9 @@
 
 [Rollup.js](https://www.rollupjs.org/) configurations to test your [pack file](https://docs.npmjs.com/cli/v6/commands/npm-pack) before publishing. It runs your unit tests against your packfile in an ES project, a CommonJS project, and in [Electron](https://www.electronjs.org/). This is primarily for [dual module](https://nodejs.org/api/packages.html#dual-commonjses-module-packages) packages.
 
-Here are the basic steps and the plugins used:
+There are also configurators that let you tweak the configurations a bit to meet your needs. If that's not good enough, this package re-exports a number of Rollup plugins for convenience.
+
+Here are the basic steps and some of the plugins used:
 
 * converts your units tests so that they use package instead of relative imports (e.g. `"../src/index.js"` to `"your-package-name"`)
   * [rollup-plugin-multi-input](https://github.com/alfredosalzillo/rollup-plugin-multi-input)
@@ -15,14 +17,16 @@ Here are the basic steps and the plugins used:
 
 The configurations have these requirements:
 
-* Unit tests are written as ES modules
-* Since the pack file is being tested, the unit tests must use only package imports that are accessible when using the package.
-* Unit tests produce TAP output and are standalone - I use [zora](https://www.npmjs.com/package/zora) because it also runs in the browser.
+* Unit tests are written as ES modules.
+* Since your pack file is being tested, the unit tests must use only package imports that are accessible when using the package.
+
+The default configurations also expect this:
+
 * Unit tests match this glob `test/**/*test.js`
 * Source code matches this glob `src/**/*.js`
+* Unit tests produce TAP output and are standalone - I use [zora](https://www.npmjs.com/package/zora) because it also runs in the browser.
 * The [pnpm](https://pnpm.io/) package manager is installed globally on your system for the temporary projects to use.
-
-If your package needs something else, this package exports the plugins above, and some other functionality, to make creating your configurations easier.
+* Rollup can produce a UMD file for your package, your tests, and all their dependencies.
 
 ## Install
 
@@ -32,60 +36,115 @@ npm install --save-dev @toolbuilder/rollup-plugin-test-tools
 
 ## Use
 
-For the ES and CommonJS tests, Rollup bundles your unit tests as ES or CommonJS modules depending on the test. The dependencies are installed in the temporary test package by `pnpm`.  The browser test builds a UMD file from your package source, unit tests, **and your dependencies**. It will try to bundle your dependencies with a default Rollup configuration. This may or may not work depending on your package dependencies. If it doesn't work, you'll need to create a custom configuration. The package [@toolbuilder/pouchdb-paginated-query](https://github.com/toolbuilder/pouchdb-paginated-query) provides an example.
-
-### ES Module Test Configuration
-
-To run the ES test on your packfile create a `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) like this:
-
-```javascript
-export { nodeEsTestConfig as default } from '@toolbuilder/rollup-plugin-test-tools'
-```
-
-Then call rollup either via the [CLI](https://www.rollupjs.org/guide/en/#command-line-reference) or the [API](https://www.rollupjs.org/guide/en/#javascript-api). The name and purpose of `nodeEsTestConfig` will be stable, but the configuration object may change.
-
-### CommonJS Module Test Configuration
-
-To run the CommonJS test on your packfile create a `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) like this:
-
-```javascript
-export { nodeCommonJsTestConfig as default } from '@toolbuilder/rollup-plugin-test-tools'
-```
-
-Then call rollup either via the [CLI](https://www.rollupjs.org/guide/en/#command-line-reference) or the [API](https://www.rollupjs.org/guide/en/#javascript-api). The name and purpose of `nodeCommonJsTestConfig` will be stable, but the configuration object may change.
-
-### Browser Module Test Configuration
-
-To run the Electron (browser) test on your packfile create a `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) like this:
-
-```javascript
-export { browserTestConfig as default } from '@toolbuilder/rollup-plugin-test-tools'
-```
-
-Then call rollup either via the [CLI](https://www.rollupjs.org/guide/en/#command-line-reference) or the [API](https://www.rollupjs.org/guide/en/#javascript-api). The name and purpose of `browserTestConfig` will be stable, but the configuration objects may change.
-
-As noted above, the browser test builds a UMD file from your package source, unit tests, **and your unit tests**. You may need a custom configuration.
-
-### All-in-one configuration
-
-As a convenience, all Rollup configurations exported by this package can be imported together. Rollup will run them one by one. Just create a a `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) like this:
+Just create a a `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) like this:
 
 ```javascript
 // Runs ES module test, CommonJS module test, then browser test in Electron
 export { testConfigs as default } from '@toolbuilder/rollup-plugin-test-tools'
 ```
 
-Then call rollup either via the [CLI](https://www.rollupjs.org/guide/en/#command-line-reference) or the [API](https://www.rollupjs.org/guide/en/#javascript-api).
-
-### Exported Helpers
+If you just want to run your tests in [Node](https://nodejs.org/) only, then your `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) could look like this:
 
 ```javascript
-import { tempPath, basePackfileTestConfig } from '@toolbuilder/rollup-plugin-test-tools'
+// Runs ES module test and CommonJS module test
+export { nodeConfigs as default } from '@toolbuilder/rollup-plugin-test-tools'
 ```
 
-The function `tempPath` creates a unique temporary path. See `src/temp-path.js` for the JSDoc. This function should be stable.
+If your tests are in the `testpack` directory instead of `tests`, then your `rollup.config.js` [configuration file](https://www.rollupjs.org/guide/en/#configuration-files) could look like this:
 
-The function `basePackfileTestConfig` creates a Rollup configuration for either a ES or CommonJS module. See `src/node-configs.js` for the JSDoc and examples. The name and purpose of `basePackfileTestConfig` will be stable, but userOptions parameter may change, and the returned configuration object may change.
+```javascript
+import { baseTestConfig } from '@toolbuilder/rollup-plugin-test-tools'
+
+const options = { testSourceDir: 'testpack' }
+// Runs ES module test, CommonJS module test, then browser test in Electron
+export default baseTestConfig(options)
+```
+
+If you need to convert your pack file tests to ES modules first, you can insert your rollup plugin to do that.
+
+```javascript
+import { baseTestConfig } from '@toolbuilder/rollup-plugin-test-tools'
+
+const yourRollupConfiguration = { /* your configuration */ }
+const options = { testSourceDir: 'testpack' }
+// This project always returns an Array of Rollup configurations,
+// so just use the spread operator to concatenate.
+export default [yourRollupConfiguration, ...baseTestConfig(options)]
+
+```
+
+**NOTE** All configurations returned by this package are `Arrays` so that they can all be handled in a consistent manner. This is because some configurations require multiple configurations to perform the test.
+
+## API
+
+This package exports quite a few functions and configurations.
+
+### Stock Rollup Configurations
+
+Here are the export statments for the stock configurations. The methods `baseBrowserTestConfig` and `basePackFileTestConfig` are documented in the next section.
+
+```javascript
+// NOTE: Rollup plugins cannot always be reused!!! So each configuration is created separately.
+
+// Test your pack file (after conversion to UMD) in Electron (e.g. browser environment)
+export const browserTestConfig = baseBrowserTestConfig()
+// Test your pack file in an ES (i.e. { "type": "module" }) Node project
+export const nodeEsTestConfig = basePackfileTestConfig()
+// Test your pack file in a CommonJS (i.e. { "type": "commonjs" }) Node project
+export const nodeCommonJsTestConfig = basePackfileTestConfig({ format: 'cjs' })
+// ES and CommonJS tests combined
+export const nodeConfigs = [...basePackfileTestConfig(), ...basePackfileTestConfig({ format: 'cjs' })]
+// ES, CommonJS, and Electron tests combined
+export const baseTestConfig = (options = {}) => {
+  return [
+    ...basePackfileTestConfig({ format: 'cjs', ...options }),
+    ...basePackfileTestConfig(options),
+    ...baseBrowserTestConfig(options)
+  ]
+}
+```
+
+As noted above, the browser test builds a UMD file from your pack file **and your unit tests**. Most likely you will need a custom configuration.
+
+### Configurators
+
+Two configurable methods generate the tests.
+
+* `basePackfileTestConfig(options = {})` **{Object[]}** - this method generates a Rollup configuration to test your pack file in a Node project. The option parameters are described in the next section.
+* `baseBrowserTestConfig(options = {})` **{Object[]}** - this method generates a Rollup configuration to test your pack file in an Electron project. The option parameters are described in the next section.
+
+### Configurator Options
+
+The test configurations in the [testpack](./testpack) directory of this project provide some examples.
+
+These options tell the plugin where to find the test files and your source:
+
+* `testSourceDir` **{String}** - the directory where your pack file tests are. This is relative to your project structure. The default value is `test`.
+* `input` **{String[]}** - Array of globs that specify what tests to use for packfile testing. The input globs are passed to [rollup-plugin-multiinput](https://github.com/alfredosalzillo/rollup-plugin-multi-input), and are processed by [micromatch](https://github.com/micromatch/micromatch). The default value is ```[`${testSourceDir}/**/*test.js`]```.
+* `modulePaths` **{String}** - glob specify your source files. This is used to figure out  which test source imports to translate to package imports. The value is passed to [rollup-plugin-relative-to-package](https://github.com/toolbuilder/rollup-plugin-relative-to-package). By default the value is `src/**/*.js`.
+
+These options tell the plugin where to put the temporary test project that tests your pack file.
+
+* `packageId` **{String}**  - to help trouble shooting, prepend this value to the default temporary directory used for testing so it is easier to find. Default value is 'package-test'.
+* `testPackageDir` **{String}** - specifies where the test project will be created. If this option is specified, the packageId option will be ignored. The default value is a unique directory in your OS temporary directory structure. The most recent testPackageDir will sort last.
+
+These options tell the plugin how to configure the project that tests your pack file and run the tests:
+
+* `format` **{String}** - Passed to Rollup to specfiy whether tests will be generated as 'es' or 'cjs'. This is only used by `basePackfileTestConfig`.
+* `packCommand` **{String}** - Specify how to generate your pack file (e.g. 'npm pack' or 'pnpm pack'). The default value is `pnpm pack`.
+* `testPackageJson` **{Object|Promise}** - partial package.json to provide test scripts and dependencies to the test project. It is passed to [@toolbuilder/rollup-plugin-create-test-package-json](https://github.com/toolbuilder/rollup-plugin-create-test-package-json).
+* `checkSemverConflicts` **{boolean}** - check for semver conflicts between testPackageJson and your package.json. This value is passed to [@toolbuilder/rollup-plugin-create-test-package-json](https://github.com/toolbuilder/rollup-plugin-create-test-package-json). The default value in this package is `true`.
+* `installCommands` **{function[]}** - Array of function commands to install test project dependencies. The commands are passed to [@toolbuilder/rollup-plugin-commands](https://github.com/toolbuilder/rollup-plugin-commands) to run. The default value is ```[shellCommand(`pnpm -C ${testPackageDir} install`)]```. BTW, `shellCommand` is exported by this package, and is from ['@toolbuilder/rollup-plugin-commands'](https://github.com/toolbuilder/rollup-plugin-commands).
+* `testCommands` **{function[]}** - Array of commands to run test project tests. These are passed to the same plugin as the `installCommands`. The default value is ```[shellCommand(`pnpm -C ${testPackageDir} test`)]```. BTW, `shellCommand` is exported by this package, and is from ['@toolbuilder/rollup-plugin-commands'](https://github.com/toolbuilder/rollup-plugin-commands).
+
+These options help tell the browser test how to build the UMD file that runs in Electron.
+
+* `external` **{String[]}** - Rollup external dependencies, passed directly to Rollup. This option is only used by `baseBrowserTestConfig`.
+* `globals` - **{Object}** - Rollup global names, passed directly to Rollup. This option is only used by `baseBrowserTestConfig`.
+
+### TempPath
+
+* `tempPath(prefix = 'package-test')` **{String}** - This function creates a unique temporary path name in your OS's temporary directory, but does not create the directory itself. The name includes a timestamp so the most recent one sorts last. The parameter `prefix` is prependended to the temporary name.
 
 ### Exported Dependencies
 
@@ -93,12 +152,14 @@ Some of this package's dependencies are exported for convenience. Links to docum
 
 ```javascript
 // These are the export statements
-export { default as createTestPackageJson } from 'rollup-plugin-create-test-package-json'
+export { default as alias } from '@rollup/plugin-alias'
 export { default as multiEntry } from '@rollup/plugin-multi-entry'
+export { default as resolve } from '@rollup/plugin-node-resolve'
+export { default as runCommands, shellCommand } from '@toolbuilder/rollup-plugin-commands'
+export { default as createPackFile } from '@toolbuilder/rollup-plugin-create-pack-file'
+export { default as createTestPackageJson } from 'rollup-plugin-create-test-package-json'
 export { default as multiInput } from 'rollup-plugin-multi-input'
 export { default as relativeToPackage } from 'rollup-plugin-relative-to-package'
-export { default as createPackFile } from '@toolbuilder/rollup-plugin-create-pack-file'
-export { default as runCommands, shellCommand } from '@toolbuilder/rollup-plugin-commands'
 ```
 
 ## Stability
@@ -107,17 +168,14 @@ This package will have a looser interpretation of [semver](https://semver.org/) 
 
 ## Contributing
 
-Contributions are encouraged. Please create an issue or a pull request.
+I hope you find this project useful enough to contribute. Please create an issue or a pull request.
 
 * I use [pnpm](https://pnpm.js.org/) instead of npm.
-* Run the unit tests with `pnpm test`
 * Package verification requires [pnpm](https://pnpm.io/) to be installed globally.
   * `npm install -g pnpm`
   * `pnpm install`
   * `pnpm run check:packfile` to test against Node ES and CommonJS projects, as well as Electron.
   * `pnpm run check` to validate the package is ready for commit
-
-Ironically, this project has no tests for itself. I use the packfile against some of my other projects. If you have a nice way to fix this, let me know!
 
 ## Issues
 
