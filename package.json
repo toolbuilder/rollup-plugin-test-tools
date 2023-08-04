@@ -1,6 +1,6 @@
 {
   "name": "@toolbuilder/rollup-plugin-test-tools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Supports pack file testing for dual modules using Rollup.",
   "keywords": [
     "rollup",
