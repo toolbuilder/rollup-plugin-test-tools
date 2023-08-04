@@ -52,7 +52,7 @@ export class RunPackfileTest {
     shell.pushd(projectDir)
     shell.exec('pnpm remove @toolbuilder/rollup-plugin-test-tools')
     shell.exec(`pnpm add --save-dev file:${packFileName}`)
-    shell.exec('pnpm run build:cjs')
+    shell.exec('pnpm run build')
     shell.popd()
   }
 

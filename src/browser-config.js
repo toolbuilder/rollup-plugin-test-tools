@@ -1,6 +1,6 @@
 import alias from '@rollup/plugin-alias'
 import createTestPackageJson from 'rollup-plugin-create-test-package-json'
-import multiInput from 'rollup-plugin-multi-input'
+import multiInputPkg from 'rollup-plugin-multi-input'
 import relativeToPackage from 'rollup-plugin-relative-to-package'
 import createPackFile from '@toolbuilder/rollup-plugin-create-pack-file'
 import runCommands, { shellCommand } from '@toolbuilder/rollup-plugin-commands'
@@ -8,6 +8,10 @@ import { tempPath } from './temp-path.js'
 import resolve from '@rollup/plugin-node-resolve'
 import multiEntry from '@rollup/plugin-multi-entry'
 import { join } from 'path'
+
+// multiInput is CJS module transpiled from TypeScript. Default is not coming in properly.
+const isFunction = object => object && typeof (object) === 'function'
+const multiInput = isFunction(multiInputPkg) ? multiInputPkg : multiInputPkg.default
 
 /**
  * Test a pack file in Electron.
@@ -25,7 +29,6 @@ export const baseBrowserTestConfig = (userOptions = {}) => {
     aliasOptions: {}, // file aliases for browser build
     external: [], // external packages in final UMD rollup
     globals: {}, // global variables in final UMD rollup
-    modulePaths: 'src/**/*.js', // package source file glob
     packCommand: 'pnpm pack', // command to generate pack file
     installCommands: [shellCommand(`pnpm -C ${testPackageDir} install`)], // command to install dependencies
     testCommands: [shellCommand(`pnpm -C ${testPackageDir} test`)],
@@ -43,7 +46,7 @@ export const baseBrowserTestConfig = (userOptions = {}) => {
       devDependencies: {
       // dependencies for test script
         'cash-cat': '^0.2.0', // provides 'cat' for non-POSIX shells
-        'tape-run': '^9.0.0' // runs UMD tests that output TAP in Electron
+        'tape-run': '^10.0.0' // runs UMD tests that output TAP in Electron
       }
     },
     ...userOptions
@@ -83,9 +86,7 @@ export const baseBrowserTestConfig = (userOptions = {}) => {
         // support file substitution for browser
         alias(options.aliasOptions),
         multiInput({ relative: `${testSourceDir}/` }),
-        relativeToPackage({
-          modulePaths: options.modulePaths
-        }),
+        relativeToPackage(),
         // relativeToPackage has identified the external packages,
         // which createTestPackageJson needs. The external packages
         // are not available in the following configs, so run now.

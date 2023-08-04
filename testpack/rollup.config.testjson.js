@@ -8,13 +8,12 @@ const cjsOptions = {
   checkSemverConflicts: true, // check for semver range conflicts between testPackageJson and packageJson
   testPackageJson: {
     type: 'commonjs',
-    scripts: { // 2: test script changed to concatenate the PouchDB distribution files for browser with the test UMD file
-      test: 'tape "test/**/*test.js"'
+    scripts: {
+      test: 'pta --reporter tap "test/**/*test.js"'
     },
     devDependencies: {
       // dependencies for test script
-      // esm: '^3.2.25',
-      tape: '^5.4.1'
+      pta: '^1.2.0'
     }
   }
 }
@@ -25,11 +24,11 @@ const esOptions = {
   testPackageJson: {
     type: 'module',
     scripts: { // 2: test script changed to concatenate the PouchDB distribution files for browser with the test UMD file
-      test: 'esm-tape-runner "test/**/*test.js"'
+      test: 'pta --reporter tap "test/**/*test.js"'
     },
     devDependencies: {
       // dependencies for test script
-      '@small-tech/esm-tape-runner': '^1.0.3'
+      pta: '^1.2.0'
     }
   }
 }

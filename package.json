@@ -1,7 +1,7 @@
 {
   "name": "@toolbuilder/rollup-plugin-test-tools",
-  "description": "Supports pack file testing for dual modules using Rollup.",
   "version": "1.0.0",
+  "description": "Supports pack file testing for dual modules using Rollup.",
   "keywords": [
     "rollup",
     "dual",
@@ -19,54 +19,61 @@
     "url": "https://github.com/toolbuilder/rollup-plugin-test-tools.git"
   },
   "license": "MIT",
-  "main": "index.js",
-  "module": "src/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./cjs/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "main": "./cjs/index.js",
+  "module": "./src/index.js",
   "files": [
+    "cjs",
     "src"
   ],
   "scripts": {
-    "check": "run-s check:*",
+    "build": "run-s build:*",
+    "build:cjs": "rollup -c rollup.config.cjs.js",
+    "check": "run-s build check:*",
     "check:packagejson": "npmPkgJsonLint .",
-    "check:packfile": "run-s test",
-    "check:src": "eslint src",
+    "check:src": "eslint src testpack",
+    "check:test": "run-s test",
     "check:uncommitted": "uncommitted",
     "prerelease": "run-s check",
     "release": "standard-version",
-    "test": "tape -r esm testpack/*.test.js"
+    "test": "pta --reporter tap testpack/*.test.js"
   },
   "eslintConfig": {
     "extends": "@toolbuilder/eslint-config"
   },
-  "dependencies": {
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-multi-entry": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.1.3",
-    "@toolbuilder/rollup-plugin-commands": "^0.1.2",
-    "@toolbuilder/rollup-plugin-create-pack-file": "^0.1.4",
-    "cuid": "^2.1.8",
-    "date-fns": "^2.28.0",
-    "esm": "^3.2.25",
-    "rollup-plugin-create-test-package-json": "^1.0.0",
-    "rollup-plugin-multi-input": "^1.3.1",
-    "rollup-plugin-relative-to-package": "^0.1.4"
-  },
-  "devDependencies": {
-    "@toolbuilder/eslint-config": "^0.1.4",
-    "@toolbuilder/package-json-lint-config": "^0.1.0",
-    "eslint": "^8.6.0",
-    "npm-package-json-lint": "^5.4.2",
-    "npm-run-all": "^4.1.5",
-    "rollup": "^2.66.0",
-    "shelljs": "^0.8.5",
-    "simple-git": "^3.1.0",
-    "standard-version": "^9.3.2",
-    "tape": "^5.4.1",
-    "uncommitted": "^1.0.0"
-  },
-  "peerDependencies": {
-    "rollup": ">= 2"
-  },
   "npmpackagejsonlint": {
     "extends": "@toolbuilder/package-json-lint-config"
+  },
+  "dependencies": {
+    "@rollup/plugin-alias": "^5.0.0",
+    "@rollup/plugin-multi-entry": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@toolbuilder/rollup-plugin-commands": "^0.1.4",
+    "@toolbuilder/rollup-plugin-create-pack-file": "^0.1.6",
+    "cuid": "^2.1.8",
+    "date-fns": "^2.30.0",
+    "rollup-plugin-create-test-package-json": "^1.1.1",
+    "rollup-plugin-multi-input": "^1.4.1",
+    "rollup-plugin-relative-to-package": "^1.0.2"
+  },
+  "devDependencies": {
+    "@toolbuilder/eslint-config": "^0.1.5",
+    "@toolbuilder/package-json-lint-config": "^0.1.0",
+    "eslint": "^8.46.0",
+    "npm-package-json-lint": "^7.0.0",
+    "npm-run-all": "^4.1.5",
+    "pta": "^1.2.0",
+    "rollup": "^3.27.2",
+    "shelljs": "^0.8.5",
+    "simple-git": "^3.19.1",
+    "standard-version": "^9.5.0",
+    "uncommitted": "^1.0.0",
+    "zora": "^5.2.0"
   }
 }

@@ -1,3 +1,4 @@
 node_modules/
+cjs/*.js
 *.tgz
 todo.md
