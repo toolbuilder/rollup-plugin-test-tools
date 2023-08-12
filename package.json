@@ -54,10 +54,10 @@
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-multi-entry": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@toolbuilder/rollup-plugin-commands": "^0.1.4",
+    "@toolbuilder/rollup-plugin-commands": "^0.1.5",
     "@toolbuilder/rollup-plugin-create-pack-file": "^0.1.6",
-    "cuid": "^2.1.8",
     "date-fns": "^2.30.0",
+    "nanoid": "^4.0.2",
     "rollup-plugin-create-test-package-json": "^1.1.1",
     "rollup-plugin-multi-input": "^1.4.1",
     "rollup-plugin-relative-to-package": "^1.0.2"

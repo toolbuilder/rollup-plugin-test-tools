@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -15,17 +15,17 @@ dependencies:
     specifier: ^15.1.0
     version: 15.1.0(rollup@3.27.2)
   '@toolbuilder/rollup-plugin-commands':
-    specifier: ^0.1.4
-    version: 0.1.4(rollup@3.27.2)
+    specifier: ^0.1.5
+    version: 0.1.5(rollup@3.27.2)
   '@toolbuilder/rollup-plugin-create-pack-file':
     specifier: ^0.1.6
     version: 0.1.6
-  cuid:
-    specifier: ^2.1.8
-    version: 2.1.8
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
+  nanoid:
+    specifier: ^4.0.2
+    version: 4.0.2
   rollup-plugin-create-test-package-json:
     specifier: ^1.1.1
     version: 1.1.1
@@ -290,10 +290,10 @@ packages:
       npm-package-json-lint: 7.0.0
     dev: true
 
-  /@toolbuilder/rollup-plugin-commands@0.1.4(rollup@3.27.2):
-    resolution: {integrity: sha512-M4UbZVP5RpXMiE/qxDr96Xv+pfDBtSjHs3pOXBqqq8x5Kprx563kbJQVh4KE7Qr4mYzlMTTJPutJYPW+oFFTGg==}
+  /@toolbuilder/rollup-plugin-commands@0.1.5(rollup@3.27.2):
+    resolution: {integrity: sha512-cwirX/4RxMZEgpwXs+3aOgNpFHCPg3IWwG2p2tOkRUg/aHZwoNl1XN9yxxOix2FjBAuTa/EOsfsmyqALKGoSJA==}
     peerDependencies:
-      rollup: ^2
+      rollup: ^2 || ^3
     dependencies:
       execa: 5.1.1
       rollup: 3.27.2
@@ -754,11 +754,6 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  /cuid@2.1.8:
-    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
-    deprecated: Cuid and other k-sortable and non-cryptographic ids (Ulid, ObjectId, KSUID, all UUIDs) are all insecure. Use @paralleldrive/cuid2 instead.
-    dev: false
 
   /dargs@7.0.0:
     resolution: {integrity: sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==}
@@ -1904,6 +1899,12 @@ packages:
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
+
+  /nanoid@4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
