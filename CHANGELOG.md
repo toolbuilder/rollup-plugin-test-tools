@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v1.0.1...v1.1.0) (2023-08-12)
+
+
+### Features
+
+* change from cuid to nanoid because cuid deprecated ([2a85d65](https://github.com/toolbuilder/rollup-plugin-test-tools/commit/2a85d653e407a5e1c41d7b51441b5ef6f3358145))
+* change zora version to 5.0.3 to deal with the exports field issue ([d8f8d07](https://github.com/toolbuilder/rollup-plugin-test-tools/commit/d8f8d074a762279ffe9ed2be17d4668bda2a28e3))
+
 ### [1.0.1](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v1.0.0...v1.0.1) (2023-08-04)
 
 ## [1.0.0](https://github.com/toolbuilder/rollup-plugin-test-tools/compare/v0.1.4...v1.0.0) (2022-01-25)
