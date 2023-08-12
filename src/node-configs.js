@@ -45,10 +45,12 @@ export const basePackfileTestConfig = (userOptions = {}) => {
       },
       devDependencies: {
         pta: '^1.2.0', // test runner does not against ES code using esm
-        zora: '^5.2.0' // pta has zora as peer dependency
+        // zora ^5.0.4 exports ES CJS wrapper instead of ES code, breaking browser tests
+        // bumping zora version here can conflict with projects using zora '5.0.3' (no caret) and this package
+        zora: '^5.0.3' // pta has zora as peer dependency
       }
     },
-    checkSemverConflicts: true,
+    checkSemverConflicts: true, // <- this is the test that dtects zora semver conflicts
     ...userOptions
   }
   // Build a Rollup configuration object for pack file testing
